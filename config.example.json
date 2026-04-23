@@ -17,7 +17,8 @@
   "parent_beacon_block_root": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "withdrawals": [],
 
-  "engine_version": "V3",
+  "engine_new_payload_version": "V5",
+  "engine_fcu_version": "V3",
 
   "tx_template": {
     "to": "0x0000000000000000000000000000000000000000",

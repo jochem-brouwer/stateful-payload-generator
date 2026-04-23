@@ -25,7 +25,8 @@ def run(cfg: dict) -> None:
     block_time = int(cfg.get("block_time", 12))
     timestamp = int(cfg["start_timestamp"]) if cfg.get("start_timestamp") else int(time.time())
 
-    version = cfg.get("engine_version", "V3")
+    new_payload_version = cfg.get("engine_new_payload_version", "V5")
+    fcu_version = cfg.get("engine_fcu_version", "V3")
     chain_id = int(cfg["chain_id"])
     private_key = cfg["private_key_hex"]
     tx_tpl = cfg["tx_template"]
@@ -58,7 +59,7 @@ def run(cfg: dict) -> None:
 
             new_payload_req = client.new_payload_request(
                 payload,
-                version,
+                new_payload_version,
                 parent_beacon_block_root,
                 [],
             )
@@ -73,7 +74,7 @@ def run(cfg: dict) -> None:
                     "safeBlockHash": safe_hash,
                     "finalizedBlockHash": finalized_hash,
                 },
-                version,
+                fcu_version,
             )
             out_f.write(json.dumps(fcu_req) + "\n")
             out_f.flush()

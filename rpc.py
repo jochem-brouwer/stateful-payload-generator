@@ -1,4 +1,6 @@
 import time
+from typing import Any
+
 import jwt
 import requests
 
@@ -6,10 +8,9 @@ import requests
 class RpcClient:
     def __init__(self, url: str, jwt_secret_hex: str | None = None):
         self.url = url
-        if jwt_secret_hex:
-            self.jwt_secret = bytes.fromhex(jwt_secret_hex.removeprefix("0x"))
-        else:
-            self.jwt_secret = None
+        self.jwt_secret: bytes | None = (
+            bytes.fromhex(jwt_secret_hex.removeprefix("0x")) if jwt_secret_hex else None
+        )
         self._id = 0
 
     def _next_id(self) -> int:
@@ -57,13 +58,12 @@ class EngineClient(RpcClient):
         parent_beacon_block_root: str,
         expected_blob_versioned_hashes: list,
     ) -> dict:
-        if version == "V1":
-            params = [payload]
-        elif version == "V2":
+        params: list[Any]
+        if version in ("V1", "V2"):
             params = [payload]
         elif version == "V3":
             params = [payload, expected_blob_versioned_hashes, parent_beacon_block_root]
-        elif version == "V4":
+        elif version in ("V4", "V5"):
             execution_requests = payload.pop("executionRequests", [])
             params = [
                 payload,
