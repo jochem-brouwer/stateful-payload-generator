@@ -1,0 +1,32 @@
+{
+  "rpc_url": "http://localhost:8551",
+  "jwt_secret_hex": "0x0000000000000000000000000000000000000000000000000000000000000000",
+
+  "private_key_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+  "chain_id": 1,
+  "initial_nonce": 0,
+
+  "initial_block_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "start_timestamp": null,
+  "block_time": 12,
+  "num_blocks": 10,
+  "txs_per_block": 10,
+
+  "fee_recipient": "0x0000000000000000000000000000000000000000",
+  "prev_randao": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "parent_beacon_block_root": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "withdrawals": [],
+
+  "engine_version": "V3",
+
+  "tx_template": {
+    "to": "0x0000000000000000000000000000000000000000",
+    "value": 0,
+    "gas": 21000,
+    "max_fee_per_gas": 1000000000,
+    "max_priority_fee_per_gas": 1000000000,
+    "data": "0x"
+  },
+
+  "output_file": "output/payloads.jsonl"
+}

@@ -1,0 +1,3 @@
+requests>=2.31
+eth-account>=0.11
+PyJWT>=2.8
