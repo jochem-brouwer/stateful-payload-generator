@@ -51,26 +51,25 @@ def run(cfg: dict) -> None:
                 raw_txs.append(build_signed_tx(private_key, chain_id, nonce, tx_tpl))
                 nonce += 1
 
-            for raw in raw_txs:
-                client.send_raw_tx(raw)
-
             attrs = {
-                "parentHash": head_hash,
                 "timestamp": hex(timestamp),
-                "feeRecipient": cfg["fee_recipient"],
                 "prevRandao": cfg["prev_randao"],
+                "suggestedFeeRecipient": cfg["fee_recipient"],
                 "withdrawals": cfg.get("withdrawals", []),
                 "parentBeaconBlockRoot": parent_beacon_block_root,
             }
-            payload = client.build_block(attrs)
-            if payload is None:
+            build_response = client.build_block(head_hash, attrs, raw_txs)
+            if build_response is None:
                 raise RuntimeError("testing_buildBlockV1 returned null")
+            payload = build_response["executionPayload"]
+            execution_requests = build_response.get("executionRequests", [])
 
             new_payload_req = client.new_payload_request(
                 payload,
                 new_payload_version,
                 parent_beacon_block_root,
                 [],
+                execution_requests,
             )
             out_f.write(json.dumps(new_payload_req) + "\n")
             out_f.flush()

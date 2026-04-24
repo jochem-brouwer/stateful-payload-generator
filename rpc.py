@@ -58,8 +58,17 @@ class EngineClient(RpcClient):
             raw_hex = "0x" + raw_hex
         return self.call("eth_sendRawTransaction", [raw_hex])
 
-    def build_block(self, attrs: dict) -> dict:
-        return self.call("testing_buildBlockV1", [attrs])
+    def build_block(
+        self,
+        parent_hash: str,
+        attrs: dict,
+        transactions: list | None,
+        extra_data: str | None = None,
+    ) -> dict:
+        params: list[Any] = [parent_hash, attrs, transactions]
+        if extra_data is not None:
+            params.append(extra_data)
+        return self.call("testing_buildBlockV1", params)
 
     def new_payload_request(
         self,
@@ -67,6 +76,7 @@ class EngineClient(RpcClient):
         version: str,
         parent_beacon_block_root: str,
         expected_blob_versioned_hashes: list,
+        execution_requests: list | None = None,
     ) -> dict:
         params: list[Any]
         if version in ("V1", "V2"):
@@ -74,16 +84,16 @@ class EngineClient(RpcClient):
         elif version == "V3":
             params = [payload, expected_blob_versioned_hashes, parent_beacon_block_root]
         elif version in ("V4", "V5"):
-            execution_requests = payload.pop("executionRequests", [])
             params = [
                 payload,
                 expected_blob_versioned_hashes,
                 parent_beacon_block_root,
-                execution_requests,
+                execution_requests or [],
             ]
         else:
             raise ValueError(f"Unknown engine version: {version}")
 
+        print(version)
         return {
             "jsonrpc": "2.0",
             "id": self._next_id(),

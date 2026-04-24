@@ -15,15 +15,15 @@
   "parent_beacon_block_root": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "withdrawals": [],
 
-  "engine_new_payload_version": "V5",
+  "engine_new_payload_version": "V4",
   "engine_fcu_version": "V3",
 
   "tx_template": {
-    "to": "0x0000000000000000000000000000000000000000",
+    "to": "0x87a6314da5ac8832f6e7a176c8fb133b19f5be04",
     "value": 0,
-    "gas": 21000,
-    "max_fee_per_gas": 1000000000,
-    "max_priority_fee_per_gas": 1000000000,
+    "gas": 16777216,
+    "max_fee_per_gas": 1000,
+    "max_priority_fee_per_gas": 100,
     "data": "0x"
   },
 
