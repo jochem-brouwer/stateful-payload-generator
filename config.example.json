@@ -1,5 +1,6 @@
 {
-  "rpc_url": "http://localhost:8551",
+  "eth_rpc_url": "http://localhost:8545",
+  "engine_rpc_url": "http://localhost:8551",
   "jwt_secret_hex": "0x0000000000000000000000000000000000000000000000000000000000000000",
 
   "private_key_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",

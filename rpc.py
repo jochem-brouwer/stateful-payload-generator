@@ -6,8 +6,9 @@ import requests
 
 
 class RpcClient:
-    def __init__(self, url: str, jwt_secret_hex: str | None = None):
-        self.url = url
+    def __init__(self, eth_url: str, engine_url: str, jwt_secret_hex: str | None = None):
+        self.eth_url = eth_url
+        self.engine_url = engine_url
         self.jwt_secret: bytes | None = (
             bytes.fromhex(jwt_secret_hex.removeprefix("0x")) if jwt_secret_hex else None
         )
@@ -17,9 +18,12 @@ class RpcClient:
         self._id += 1
         return self._id
 
-    def _headers(self) -> dict:
+    def _url_for(self, method: str) -> str:
+        return self.engine_url if method.startswith("engine_") else self.eth_url
+
+    def _headers_for(self, method: str) -> dict:
         headers = {"Content-Type": "application/json"}
-        if self.jwt_secret:
+        if method.startswith("engine_") and self.jwt_secret:
             token = jwt.encode({"iat": int(time.time())}, self.jwt_secret, algorithm="HS256")
             headers["Authorization"] = f"Bearer {token}"
         return headers
@@ -34,11 +38,17 @@ class RpcClient:
         return self.send(request)
 
     def send(self, request: dict):
-        response = requests.post(self.url, json=request, headers=self._headers(), timeout=60)
+        method = request["method"]
+        response = requests.post(
+            self._url_for(method),
+            json=request,
+            headers=self._headers_for(method),
+            timeout=60,
+        )
         response.raise_for_status()
         data = response.json()
         if "error" in data and data["error"] is not None:
-            raise RuntimeError(f"RPC error from {request['method']}: {data['error']}")
+            raise RuntimeError(f"RPC error from {method}: {data['error']}")
         return data.get("result")
 
 

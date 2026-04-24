@@ -13,7 +13,11 @@ def load_config(path: str) -> dict:
 
 
 def run(cfg: dict) -> None:
-    client = EngineClient(url=cfg["rpc_url"], jwt_secret_hex=cfg.get("jwt_secret_hex"))
+    client = EngineClient(
+        eth_url=cfg["eth_rpc_url"],
+        engine_url=cfg["engine_rpc_url"],
+        jwt_secret_hex=cfg.get("jwt_secret_hex"),
+    )
 
     output_path = Path(cfg["output_file"])
     output_path.parent.mkdir(parents=True, exist_ok=True)
