@@ -4,11 +4,8 @@
 
   "private_key_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",
   "chain_id": 1,
-  "initial_nonce": 0,
 
   "initial_block_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "start_timestamp": null,
-  "block_time": 12,
   "num_blocks": 10,
   "txs_per_block": 10,
 

@@ -1,7 +1,8 @@
 import argparse
 import json
-import time
 from pathlib import Path
+
+from eth_account import Account
 
 from rpc import EngineClient
 from tx import build_signed_tx
@@ -21,10 +22,6 @@ def run(cfg: dict) -> None:
     safe_hash = cfg["initial_block_hash"]
     finalized_hash = cfg["initial_block_hash"]
 
-    nonce = int(cfg["initial_nonce"])
-    block_time = int(cfg.get("block_time", 12))
-    timestamp = int(cfg["start_timestamp"]) if cfg.get("start_timestamp") else int(time.time())
-
     new_payload_version = cfg.get("engine_new_payload_version", "V5")
     fcu_version = cfg.get("engine_fcu_version", "V3")
     chain_id = int(cfg["chain_id"])
@@ -35,8 +32,16 @@ def run(cfg: dict) -> None:
         "0x" + "00" * 32,
     )
 
+    sender_address = Account.from_key(private_key).address
+    head_block = client.call("eth_getBlockByHash", [head_hash, False])
+    if head_block is None:
+        raise RuntimeError(f"Head block {head_hash} not found")
+    timestamp = int(head_block["timestamp"], 16)
+    nonce = int(client.call("eth_getTransactionCount", [sender_address, head_hash]), 16)
+
     with output_path.open("a") as out_f:
         for i in range(int(cfg["num_blocks"])):
+            timestamp += 1
             raw_txs = []
             for _ in range(int(cfg["txs_per_block"])):
                 raw_txs.append(build_signed_tx(private_key, chain_id, nonce, tx_tpl))
@@ -83,7 +88,6 @@ def run(cfg: dict) -> None:
             print(f"[{i + 1}/{cfg['num_blocks']}] head={new_head} ts={timestamp} nonce_next={nonce}")
 
             head_hash = new_head
-            timestamp += block_time
 
 
 def main() -> None:
