@@ -19,12 +19,22 @@
   "engine_fcu_version": "V3",
 
   "tx_template": {
+    "type": "static",
     "to": "0x87a6314da5ac8832f6e7a176c8fb133b19f5be04",
     "value": 0,
     "gas": 16777216,
     "max_fee_per_gas": 1000,
     "max_priority_fee_per_gas": 100,
     "data": "0x"
+  },
+
+  "tx_template_create2_deployer_example": {
+    "type": "create2_deployer",
+    "value": 0,
+    "max_fee_per_gas": 1000,
+    "max_priority_fee_per_gas": 100,
+    "start_salt": 0,
+    "initcode": "0x"
   },
 
   "output_file": "output/payloads.jsonl"

@@ -1,6 +1,7 @@
 import argparse
 import json
 from pathlib import Path
+import time
 
 from eth_account import Account
 
@@ -43,13 +44,15 @@ def run(cfg: dict) -> None:
     timestamp = int(head_block["timestamp"], 16)
     nonce = int(client.call("eth_getTransactionCount", [sender_address, head_hash]), 16)
 
+    tx_index = 0
     with output_path.open("a") as out_f:
         for i in range(int(cfg["num_blocks"])):
             timestamp += 1
             raw_txs = []
             for _ in range(int(cfg["txs_per_block"])):
-                raw_txs.append(build_signed_tx(private_key, chain_id, nonce, tx_tpl))
+                raw_txs.append(build_signed_tx(private_key, chain_id, nonce, tx_tpl, tx_index))
                 nonce += 1
+                tx_index += 1
 
             attrs = {
                 "timestamp": hex(timestamp),
@@ -91,6 +94,8 @@ def run(cfg: dict) -> None:
             print(f"[{i + 1}/{cfg['num_blocks']}] head={new_head} ts={timestamp} nonce_next={nonce}")
 
             head_hash = new_head
+
+            time.sleep(0.5)
 
 
 def main() -> None:
